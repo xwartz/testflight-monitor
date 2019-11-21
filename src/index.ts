@@ -11,8 +11,8 @@ import slack from './lib/slack'
 const privateKey = readFileSync(path.resolve(__dirname, appstoreConfig.privateKey))
 const keyId = appstoreConfig.keyId
 const issuerId = appstoreConfig.issuerId
+const groupId = appstoreConfig.groupId
 
-const groupId = config.groupId
 const maxTesterNum = config.maxTesterNum
 const removeTesterNum = config.removeTesterNum
 
