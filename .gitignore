@@ -65,4 +65,4 @@ src/**.js
 .idea/*
 
 package-lock.json
-config
+config/appstore
