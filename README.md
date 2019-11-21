@@ -16,6 +16,42 @@
 1. 监控 testflight 某个 group 的版本期限
 2. 当版本距离过期时间 N 天时，自动发 slack 提示
 
+## how to use
+
+install:
+```
+yarn install
+```
+
+config:
+```ts
+// appstore.ts
+export default {
+  groupId: 'xxxxx',
+  issuerId: 'xxxx',
+  keyId: 'xxx',
+  privateKey: './config/appstore/xxxx',
+}
+```
+
+```ts
+// slack.ts
+export default {
+  channel: '#monitor',
+  webhookUrl: '/services/xxxxx',
+}
+```
+
+run:
+```
+yarn start
+```
+
+or use pm2
+```
+yarn prod:start
+```
+
 ## reference
 
 - [App Store Connect API](https://developer.apple.com/documentation/appstoreconnectapi)
