@@ -9,6 +9,7 @@
   "license": "MIT",
   "keywords": [],
   "scripts": {
+    "start": "ts-node ./src/index",
     "describe": "npm-scripts-info",
     "build": "run-s clean && run-p build:*",
     "build:main": "tsc -p tsconfig.json",
@@ -51,7 +52,9 @@
     "node": ">=8.9"
   },
   "dependencies": {
-    "sha.js": "^2.4.11"
+    "appstoreconnect": "^0.2.1",
+    "sha.js": "^2.4.11",
+    "ts-node": "^8.5.2"
   },
   "devDependencies": {
     "@bitjson/npm-scripts-info": "^1.0.0",
