@@ -16,15 +16,19 @@ const slack = (data: Params) => {
     fallback: `TestFlight - The number of testers reached ${data.reachedNum}`,
     fields: [{
       short: false,
-      title: '🌚 what should we do?',
-      value: `🌝 we deleted ${data.removedNum} guys!`,
+      title: ' ',
+      value: `🚑 we just deleted ${data.removedNum} guys!`,
     }],
     pretext: `TestFlight - The number of testers reached ${data.reachedNum}`,
-    ts: Date.now(),
+    ts: (Date.now() / 1000).toFixed(0),
   }]
 
   const options = {
-    data: `{'channel': ${data.channel}, 'username': 'Monitor', 'attachments': ${JSON.stringify(attachments)}}`,
+    data: JSON.stringify({
+      channel: data.channel,
+      username: 'Monitor',
+      attachments,
+    }),
     headers: {
       'Content-Type': 'application/json'
     },
@@ -33,9 +37,6 @@ const slack = (data: Params) => {
     path: data.webhookUrl,
     port: 443,
   }
-
-  console.log('slack', options)
-
   return request(options)
 }
 
