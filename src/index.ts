@@ -1,6 +1,5 @@
 import { v1 } from 'appstoreconnect'
 import { readFileSync } from 'fs'
-import path from 'path'
 // appstore config
 import appstoreConfig from './config/appstore'
 import config from './config/index'
@@ -8,7 +7,7 @@ import config from './config/index'
 import slackConfig from './config/slack'
 import slack from './lib/slack'
 
-const privateKey = readFileSync(path.resolve(__dirname, appstoreConfig.privateKey))
+const privateKey = readFileSync(appstoreConfig.privateKey)
 const keyId = appstoreConfig.keyId
 const issuerId = appstoreConfig.issuerId
 const groupId = appstoreConfig.groupId
@@ -18,13 +17,13 @@ const removeTesterNum = config.removeTesterNum
 
 const freq = 1 * 1000 * 60 // 1min
 
-const token = v1.token(privateKey, issuerId, keyId)
-const api = v1(token)
-
 function start(): void {
   let timer = null
   const polling = async () => {
     try {
+      const token = v1.token(privateKey, issuerId, keyId)
+      const api = v1(token)
+
       // get testers info
       const limit = 200
       const testers = await v1.testflight.getAllBetaTesterIDsForBetaGroup(api, groupId, { limit })
