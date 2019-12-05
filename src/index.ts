@@ -15,7 +15,9 @@ const groupId = appstoreConfig.groupId
 const maxTesterNum = config.maxTesterNum
 const removeTesterNum = config.removeTesterNum
 
-const freq = 1 * 1000 * 60 // 1min
+const freq = config.freq || 1 * 1000 * 60 // 1min
+
+let isSlacked = false
 
 function start(): void {
   let timer = null
@@ -47,11 +49,29 @@ function start(): void {
         console.log('🌝', `we deleted ${removedNum} guys!`)
         await slack({ ...slackConfig, reachedNum: total, removedNum })
       }
+
+      // slack every day
+      if (slackConfig.reminderHour !== undefined) {
+        const hours = (new Date()).getHours()
+        if (hours !== slackConfig.reminderHour) {
+          isSlacked = false
+          return
+        }
+        if (isSlacked) {
+          return
+        }
+        if (hours === slackConfig.reminderHour) {
+          await slack({ ...slackConfig, reachedNum: total, removedNum: 0 })
+          isSlacked = true
+        }
+      }
+
     } catch (err) {
       console.log('🌚', err)
     }
 
-    clearTimeout(timer)
+    // tslint:disable-next-line: no-unused-expression
+    timer && clearTimeout(timer)
     timer = setTimeout(polling, freq)
   }
   polling()
