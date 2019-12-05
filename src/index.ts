@@ -69,12 +69,11 @@ function start(): void {
     } catch (err) {
       console.log('🌚', err)
     }
-
-    // tslint:disable-next-line: no-unused-expression
-    timer && clearTimeout(timer)
-    timer = setTimeout(polling, freq)
   }
   polling()
+  // tslint:disable-next-line: no-unused-expression
+  timer && clearTimeout(timer)
+  timer = setTimeout(start, freq)
 }
 
 start()
