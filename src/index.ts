@@ -6,6 +6,7 @@ import config from './config/index'
 // slack config
 import slackConfig from './config/slack'
 import slack from './lib/slack'
+import { asyncForEach, sleep } from './lib/utils'
 
 const privateKey = readFileSync(appstoreConfig.privateKey)
 const keyId = appstoreConfig.keyId
@@ -37,15 +38,27 @@ function start(): void {
       if (total >= maxTesterNum) {
         const maxNum = removeTesterNum > limit ? limit : removeTesterNum
         const removeTesters = testers.data.slice(0, maxNum)
-        await v1.testflight.removeBetaTestersFromBetaGroup(api, groupId, {
-          data: removeTesters
-        }).catch(err => {
-          // handle error
-          if (err.message !== 'Unexpected end of JSON input') {
-            throw err
-          }
-        })
         const removedNum = removeTesters.length
+
+        await asyncForEach(removeTesters, async (tester) => {
+          try {
+            await v1.testflight.deleteBetaTester(api, tester.id)
+          } catch (err) {
+            if (err.message !== 'Unexpected end of JSON input') {
+              throw err
+            }
+          }
+          await sleep(300)
+        })
+
+        // await v1.testflight.removeBetaTestersFromBetaGroup(api, groupId, {
+        //   data: removeTesters
+        // }).catch(err => {
+        //   // handle error
+        //   if (err.message !== 'Unexpected end of JSON input') {
+        //     throw err
+        //   }
+        // })
         console.log('🌝', `we deleted ${removedNum} guys!`)
         await slack({ ...slackConfig, reachedNum: total, removedNum })
       }
