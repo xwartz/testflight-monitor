@@ -20,7 +20,7 @@ const freq = config.freq || 1 * 1000 * 60 // 1min
 
 let isSlacked = false
 
-function start(): void {
+async function start(): Promise<any> {
   let timer = null
   const polling = async () => {
     try {
@@ -42,13 +42,14 @@ function start(): void {
 
         await asyncForEach(removeTesters, async (tester) => {
           try {
+            console.log('deleting tester', tester.id)
             await v1.testflight.deleteBetaTester(api, tester.id)
+            await sleep(500)
           } catch (err) {
             if (err.message !== 'Unexpected end of JSON input') {
               throw err
             }
           }
-          await sleep(300)
         })
 
         // await v1.testflight.removeBetaTestersFromBetaGroup(api, groupId, {
@@ -83,7 +84,7 @@ function start(): void {
       console.log('🌚', err)
     }
   }
-  polling()
+  await polling()
   // tslint:disable-next-line: no-unused-expression
   timer && clearTimeout(timer)
   timer = setTimeout(start, freq)
